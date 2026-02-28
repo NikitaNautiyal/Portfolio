@@ -1,79 +1,661 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nikita Nautyal &mdash; UI/UX Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:   #0C0C0A;
+  --white:   #F2F0EB;
+  --orange:  #FF5C00;
+  --green:   #00E87A;
+  --purple:  #7B2FFF;
+  --yellow:  #FFE000;
+  --readable: #C8C4BC;
+  --line:    rgba(242,240,235,0.12);
+  --line-dk: rgba(12,12,10,0.12);
+  --serif:   'Cormorant Garamond',serif;
+  --sans:    'Space Grotesk',sans-serif;
+}
+html{scroll-behavior:smooth}
+/* base font weight bumped to 400 for readability */
+body{background:var(--black);color:var(--white);font-family:var(--sans);font-weight:400;cursor:none;overflow-x:hidden}
+
+/* Cursor */
+.cursor{width:10px;height:10px;background:var(--orange);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:background .2s}
+.cursor-ring{width:38px;height:38px;border:1.5px solid var(--orange);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:width .3s,height .3s,border-color .3s;transform:translate(-50%,-50%)}
+body:has(a:hover) .cursor{background:var(--green)}
+body:has(a:hover) .cursor-ring{width:60px;height:60px;border-color:var(--green)}
+body:has(button:hover) .cursor{background:var(--yellow)}
+body:has(button:hover) .cursor-ring{width:60px;height:60px;border-color:var(--yellow)}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:24px 60px}
+nav::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,var(--black) 55%,transparent);z-index:-1}
+.nav-logo{font-family:var(--serif);font-size:1.3rem;font-weight:600;text-decoration:none;color:var(--white);cursor:none}
+.nav-logo span{color:var(--orange)}
+.nav-links{display:flex;gap:36px;list-style:none}
+/* accessible: #A0A0A0 on black = 5.3:1 contrast */
+.nav-links a{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;color:#A0A09A;transition:color .25s;cursor:none;font-weight:600}
+.nav-links a:hover,.nav-links a.active{color:var(--orange)}
+section{min-height:100vh}
+
+/* HERO */
+#home{display:flex;flex-direction:column;justify-content:center;padding:0 60px;position:relative;overflow:hidden;background:var(--black)}
+.hero-stripe{position:absolute;top:0;right:0;width:38%;height:100%;background:var(--orange);clip-path:polygon(18% 0%,100% 0%,100% 100%,0% 100%);opacity:.07;pointer-events:none}
+/* accessible green on black: #00E87A = 9.1:1 */
+.hero-label{font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--green);margin-bottom:24px;opacity:0;animation:fadeUp 1s .3s forwards;font-weight:600;display:flex;align-items:center;gap:12px}
+.hero-label::before{content:'';display:block;width:36px;height:2px;background:var(--green)}
+.hero-title{font-family:var(--serif);font-size:clamp(4.5rem,10vw,10.5rem);font-weight:600;line-height:.88;letter-spacing:-.02em;margin-bottom:40px;opacity:0;animation:fadeUp 1.1s .5s forwards;color:var(--white)}
+.hero-title .lo{color:var(--orange);font-style:italic}
+/* dimmed line now fully visible at 55% — just atmospheric */
+.hero-title .ld{color:rgba(242,240,235,.5)}
+/* hero body: #C8C4BC on black ≈ 7:1 */
+.hero-sub{max-width:420px;font-size:.95rem;line-height:1.9;color:var(--readable);margin-bottom:56px;opacity:0;animation:fadeUp 1.1s .8s forwards;font-weight:400}
+.hero-sub strong{color:var(--white);font-weight:700}
+.hero-cta-row{display:flex;align-items:center;gap:24px;opacity:0;animation:fadeUp 1.1s 1.1s forwards}
+.hero-cta{display:inline-flex;align-items:center;gap:14px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;background:var(--orange);color:var(--black);padding:16px 36px;font-weight:700;cursor:none;transition:background .3s,gap .3s}
+.hero-cta:hover{background:var(--green);gap:22px}
+.hero-cta-ghost{display:inline-flex;align-items:center;gap:10px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;border:1.5px solid rgba(242,240,235,.35);color:#D8D4CC;padding:16px 28px;font-weight:600;cursor:none;transition:border-color .3s,color .3s}
+.hero-cta-ghost:hover{border-color:var(--green);color:var(--green)}
+.hero-bg{position:absolute;right:-10px;bottom:20px;font-family:var(--serif);font-size:clamp(6rem,16vw,18rem);font-weight:600;color:rgba(242,240,235,.03);line-height:1;letter-spacing:-.04em;user-select:none;pointer-events:none}
+.scroll-hint{position:absolute;bottom:44px;left:60px;display:flex;align-items:center;gap:12px;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:#8A8880;opacity:0;animation:fadeIn 1.5s 1.8s forwards;font-weight:600}
+.scroll-hint::before{content:'';display:block;width:1px;height:36px;background:var(--orange);animation:grow 2s 2s ease infinite}
+
+/* ABOUT — cream bg, dark text */
+#about{display:grid;grid-template-columns:1fr 1fr;padding:120px 60px;gap:80px;align-items:center;border-top:1px solid var(--line);background:var(--white);color:var(--black)}
+/* orange on white = 3.1:1 — boosted to darker shade for accessibility */
+.section-label{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:#CC4400;margin-bottom:20px;display:flex;align-items:center;gap:14px;font-weight:700}
+.section-label::before{content:'';display:block;width:28px;height:2px;background:#CC4400}
+#about .about-heading{font-family:var(--serif);font-size:clamp(2.8rem,4.5vw,5rem);font-weight:600;line-height:1.05;margin-bottom:32px;color:#111110}
+#about .about-heading em{font-style:italic;color:#007A42}
+/* body text on white: #3A3A36 = 10:1 contrast */
+.about-text{font-size:.92rem;line-height:1.9;color:#3A3A36;margin-bottom:18px;font-weight:400}
+.about-text strong{color:#111110;font-weight:700}
+.about-right{display:flex;flex-direction:column;gap:0}
+.stat-item{border-top:1px solid var(--line-dk);padding:28px 0;display:flex;align-items:flex-end;justify-content:space-between}
+.stat-number{font-family:var(--serif);font-size:4rem;font-weight:600;line-height:1}
+.stat-item:nth-child(1) .stat-number{color:var(--orange)}
+.stat-item:nth-child(2) .stat-number{color:#007A42}
+.stat-item:nth-child(3) .stat-number{color:#B8860B}
+.stat-item:nth-child(4) .stat-number{color:var(--purple)}
+/* stat label on white: #555 = 7.5:1 */
+.stat-label{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:#555550;text-align:right;max-width:140px;font-weight:600}
+
+/* EXPERIENCE */
+#experience{padding:120px 60px;border-top:1px solid var(--line-dk);background:var(--white);color:var(--black)}
+#experience .section-label{color:#CC4400}
+#experience .section-label::before{background:#CC4400}
+.exp-title{font-family:var(--serif);font-size:clamp(2.8rem,4.5vw,5rem);font-weight:600;line-height:1.05;margin-bottom:72px;color:#111110}
+.exp-title em{font-style:italic;color:var(--orange)}
+.exp-card{display:grid;grid-template-columns:240px 1fr;gap:60px;padding:56px 0;border-top:2px solid rgba(12,12,10,.1);align-items:start}
+.exp-role{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:#CC4400;margin-bottom:10px;font-weight:700}
+.exp-company{font-family:var(--serif);font-size:1.8rem;font-weight:600;color:#111110;margin-bottom:8px}
+.exp-badge{display:inline-block;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;background:var(--green);color:#0A2A18;padding:5px 13px;font-weight:700}
+.exp-content h3{font-family:var(--serif);font-size:2.2rem;font-weight:600;margin-bottom:28px;line-height:1.15;color:#111110}
+.exp-highlights{list-style:none;display:flex;flex-direction:column;gap:14px}
+/* #3A3A36 on white = 10:1 */
+.exp-highlights li{font-size:.9rem;line-height:1.85;color:#3A3A36;padding-left:22px;position:relative;font-weight:400}
+.exp-highlights li::before{content:'>';position:absolute;left:0;color:var(--orange);font-weight:700}
+.exp-highlights li strong{color:#111110;font-weight:700}
+
+/* PROJECTS */
+#projects{padding:120px 60px;border-top:1px solid var(--line);background:var(--black)}
+#projects .section-label{color:var(--green);font-weight:700}
+#projects .section-label::before{background:var(--green)}
+.projects-headline{font-family:var(--serif);font-size:clamp(3rem,6vw,6rem);font-weight:600;color:var(--white);margin-bottom:8px;line-height:.95}
+.projects-headline em{font-style:italic;color:var(--orange)}
+/* subtext: #A0A09A on black = 5.3:1 */
+.projects-sub{font-size:.88rem;color:#A0A09A;margin-bottom:72px;font-weight:500}
+.projects-sub span{color:var(--green);font-weight:700}
+.projects-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.proj-card:nth-child(1){grid-column:span 7}
+.proj-card:nth-child(2){grid-column:span 5}
+.proj-card:nth-child(3){grid-column:span 5}
+.proj-card:nth-child(4){grid-column:span 7}
+.proj-card{position:relative;overflow:hidden;display:block;text-decoration:none;cursor:none}
+.proj-card-art{width:100%;aspect-ratio:16/10;position:relative;overflow:hidden;transition:filter .5s}
+.proj-card:hover .proj-card-art{filter:brightness(.3) saturate(.4)}
+.proj-card-bottom{position:absolute;bottom:0;left:0;right:0;padding:24px 28px 28px;background:linear-gradient(to top,rgba(10,8,6,.99) 0%,rgba(10,8,6,.7) 50%,transparent 100%)}
+.proj-card-tags{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.proj-tag{font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;padding:3px 10px;font-weight:700}
+.proj-card:nth-child(1) .proj-tag{background:var(--orange);color:var(--black)}
+.proj-card:nth-child(2) .proj-tag{background:var(--purple);color:var(--white)}
+.proj-card:nth-child(3) .proj-tag{background:var(--green);color:#0A2A18}
+.proj-card:nth-child(4) .proj-tag{background:var(--yellow);color:var(--black)}
+.proj-card-name{font-family:var(--serif);font-size:clamp(1.4rem,2.5vw,2.2rem);font-weight:600;color:var(--white);line-height:1.1;margin-bottom:0;transition:margin .35s}
+/* card desc: #C0BBAF on near-black = 7:1 */
+.proj-card-desc{font-size:.82rem;line-height:1.8;color:#C0BBAF;max-height:0;overflow:hidden;transition:max-height .5s ease;font-weight:400}
+.proj-card:hover .proj-card-name{margin-bottom:10px}
+.proj-card:hover .proj-card-desc{max-height:110px}
+.proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transform:scaleX(0);transform-origin:left;transition:transform .5s;z-index:2}
+.proj-card:nth-child(1)::before{background:var(--orange)}
+.proj-card:nth-child(2)::before{background:var(--purple)}
+.proj-card:nth-child(3)::before{background:var(--green)}
+.proj-card:nth-child(4)::before{background:var(--yellow)}
+.proj-card:hover::before{transform:scaleX(1)}
+.proj-card-arrow{position:absolute;top:20px;right:20px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--white);border:1px solid rgba(242,240,235,.25);border-radius:50%;opacity:0;transform:translate(8px,-8px);transition:opacity .4s,transform .4s,background .3s;z-index:3}
+.proj-card:hover .proj-card-arrow{opacity:1;transform:translate(0,0)}
+.proj-card:nth-child(1):hover .proj-card-arrow{background:var(--orange);border-color:var(--orange);color:var(--black)}
+.proj-card:nth-child(2):hover .proj-card-arrow{background:var(--purple);border-color:var(--purple)}
+.proj-card:nth-child(3):hover .proj-card-arrow{background:var(--green);border-color:var(--green);color:#0A2A18}
+.proj-card:nth-child(4):hover .proj-card-arrow{background:var(--yellow);border-color:var(--yellow);color:var(--black)}
+
+/* PROCESS */
+#process{padding:120px 60px;background:var(--black)}
+#process .section-label{color:var(--yellow);font-weight:700}
+#process .section-label::before{background:var(--yellow)}
+.process-title{font-family:var(--serif);font-size:clamp(2.8rem,5vw,5.5rem);font-weight:600;color:var(--white);margin-bottom:80px;line-height:1}
+.process-title em{font-style:italic;color:var(--yellow)}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line)}
+.process-step{padding:48px 36px;border-right:1px solid var(--line);transition:background .35s;position:relative;overflow:hidden}
+.process-step:last-child{border-right:none}
+.process-step::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.process-step:nth-child(1)::after{background:var(--orange)}
+.process-step:nth-child(2)::after{background:var(--green)}
+.process-step:nth-child(3)::after{background:var(--yellow)}
+.process-step:nth-child(4)::after{background:var(--purple)}
+.process-step:hover::after{transform:scaleX(1)}
+.process-step:hover{background:rgba(242,240,235,.04)}
+.step-num{font-family:var(--serif);font-size:5rem;font-weight:600;line-height:1;margin-bottom:28px}
+.process-step:nth-child(1) .step-num{color:var(--orange)}
+.process-step:nth-child(2) .step-num{color:var(--green)}
+.process-step:nth-child(3) .step-num{color:var(--yellow)}
+.process-step:nth-child(4) .step-num{color:var(--purple)}
+.step-title{font-family:var(--serif);font-size:1.6rem;font-weight:600;color:var(--white);margin-bottom:16px}
+/* #C8C4BC on black = 7:1 */
+.step-desc{font-size:.85rem;line-height:1.9;color:var(--readable);font-weight:400}
+
+/* TOOLS */
+#tools{padding:120px 60px;background:var(--white);color:var(--black)}
+#tools .section-label{color:#CC4400;font-weight:700}
+#tools .section-label::before{background:#CC4400}
+.tools-title{font-family:var(--serif);font-size:clamp(2.8rem,5vw,5.5rem);font-weight:600;line-height:1.05;color:#111110}
+.tools-title em{font-style:italic;color:var(--purple)}
+.tools-subtitle{font-size:.92rem;color:#3A3A36;line-height:1.8;max-width:440px;margin-top:16px;margin-bottom:72px;font-weight:400}
+.tools-categories{display:flex;flex-direction:column;gap:60px}
+.tools-cat-label{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:#111110;margin-bottom:20px;font-weight:700;display:flex;align-items:center;gap:12px}
+.tools-cat-label::before{content:'';display:block;width:20px;height:3px}
+.tools-cat-label.cat-d::before{background:var(--orange)}
+.tools-cat-label.cat-r::before{background:#007A42}
+.tools-cat-label.cat-v::before{background:var(--purple)}
+.tools-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:1px;background:rgba(12,12,10,.1)}
+.tool-card{background:var(--white);padding:28px 24px;transition:background .3s;position:relative;overflow:hidden}
+.tool-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.tool-card:hover::after{transform:scaleX(1)}
+.tool-card:hover{background:#EDE9E1}
+.tl-d .tool-card::after{background:var(--orange)}
+.tl-r .tool-card::after{background:#007A42}
+.tl-v .tool-card::after{background:var(--purple)}
+/* #111110 on white = 19:1 */
+.tool-name{font-size:.88rem;font-weight:700;letter-spacing:.02em;margin-bottom:6px;color:#111110}
+/* #555550 on white = 7.5:1 */
+.tool-use{font-size:.75rem;color:#555550;line-height:1.5;font-weight:400}
+.tool-icon{font-size:1.4rem;margin-bottom:14px;color:#888882}
+
+/* CONTACT */
+#contact{padding:0;min-height:100vh;display:flex;flex-direction:column;background:var(--black);position:relative;overflow:hidden}
+
+/* bold statement top */
+.contact-top{padding:100px 60px 64px;position:relative;z-index:1}
+.contact-top .section-label{color:var(--green);font-weight:700}
+.contact-top .section-label::before{background:var(--green)}
+.contact-tagline{font-family:var(--serif);font-size:clamp(4rem,9vw,9.5rem);font-weight:600;line-height:.88;letter-spacing:-.03em;color:var(--white);margin-top:28px;margin-bottom:0}
+.contact-tagline em{font-style:italic;color:var(--orange)}
+.contact-tagline .cg{color:var(--green);font-style:italic}
+
+/* 2-col layout: tagline left, intro right */
+.contact-upper{display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:end;padding:100px 60px 64px}
+.contact-byline{font-size:.95rem;line-height:1.9;color:var(--readable);font-weight:400;padding-bottom:8px}
+.contact-byline strong{color:var(--white);font-weight:700}
+
+/* orange accent bar */
+.contact-bar{height:3px;background:linear-gradient(to right,var(--orange),var(--green),var(--purple),var(--yellow));margin:0 60px}
+
+/* 4-tile grid */
+.contact-grid{display:grid;grid-template-columns:repeat(4,1fr);flex:1;border-top:1px solid var(--line)}
+.contact-tile{display:flex;flex-direction:column;justify-content:space-between;padding:48px 40px 44px;border-right:1px solid var(--line);text-decoration:none;cursor:none;position:relative;overflow:hidden;transition:background .4s;min-height:240px}
+.contact-tile:last-child{border-right:none}
+.contact-tile::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .4s;z-index:0}
+.contact-tile:nth-child(1)::before{background:var(--orange)}
+.contact-tile:nth-child(2)::before{background:#1A5C35}
+.contact-tile:nth-child(3)::before{background:#3D1880}
+.contact-tile:nth-child(4)::before{background:#7A6200}
+.contact-tile:hover::before{opacity:1}
+
+.ct-top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+/* label: #888 on black = 4.5:1 — raised to #A0A09A */
+.ct-label{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:#A0A09A;font-weight:700;transition:color .35s}
+.contact-tile:hover .ct-label{color:var(--white)}
+.ct-arrow{width:40px;height:40px;border:1px solid rgba(242,240,235,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.95rem;color:#A0A09A;transition:all .35s}
+.contact-tile:hover .ct-arrow{border-color:var(--white);color:var(--white);transform:translate(4px,-4px)}
+
+/* value text: fully white, large serif */
+.ct-value{font-family:var(--serif);font-size:clamp(1rem,1.4vw,1.5rem);font-weight:600;color:var(--white);line-height:1.2;position:relative;z-index:1;transition:letter-spacing .35s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contact-tile:hover .ct-value{letter-spacing:.01em}
+
+/* tag pill bottom */
+.ct-tag{display:inline-block;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;padding:4px 11px;font-weight:700;position:relative;z-index:1;align-self:flex-start;margin-top:20px}
+.contact-tile:nth-child(1) .ct-tag{background:var(--orange);color:var(--black)}
+.contact-tile:nth-child(2) .ct-tag{background:var(--green);color:#0A2A18}
+.contact-tile:nth-child(3) .ct-tag{background:var(--purple);color:var(--white)}
+.contact-tile:nth-child(4) .ct-tag{background:var(--yellow);color:var(--black)}
+.contact-tile:hover .ct-tag{background:var(--white)}
+.contact-tile:nth-child(1):hover .ct-tag{color:var(--orange)}
+.contact-tile:nth-child(2):hover .ct-tag{color:#007A42}
+.contact-tile:nth-child(3):hover .ct-tag{color:var(--purple)}
+.contact-tile:nth-child(4):hover .ct-tag{color:#7A6200}
+
+footer{padding:32px 60px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:var(--black)}
+/* #888 on black = 4.5:1 */
+footer p{font-size:.7rem;letter-spacing:.1em;color:#888882;font-weight:500}
+footer span{color:var(--orange)}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:.6}}
+@keyframes grow{0%,100%{height:36px;opacity:.4}50%{height:56px;opacity:1}}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:none}
+
+@media(max-width:1100px){
+  nav{padding:20px 24px}
+  #home,#about,#experience,#projects,#process,#tools{padding-left:28px;padding-right:28px}
+  .contact-upper{padding:72px 28px 52px;grid-template-columns:1fr}
+  .contact-bar{margin:0 28px}
+  .contact-grid{grid-template-columns:1fr 1fr}
+  .contact-tile{border-bottom:1px solid var(--line)}
+  .contact-tile:nth-child(2){border-right:none}
+  .contact-tile:nth-child(3){border-bottom:none}
+  .contact-tile:last-child{border-bottom:none}
+  footer{padding:24px 28px;flex-direction:column;gap:8px;text-align:center}
+  #about{grid-template-columns:1fr}
+  .exp-card{grid-template-columns:1fr;gap:20px}
+  .process-steps{grid-template-columns:1fr 1fr}
+  .proj-card:nth-child(1),.proj-card:nth-child(2),.proj-card:nth-child(3),.proj-card:nth-child(4){grid-column:span 12}
+  .hero-cta-row{flex-direction:column;align-items:flex-start}
+  .nav-links{gap:16px}
+}
+@media(max-width:640px){
+  .contact-grid{grid-template-columns:1fr}
+  .contact-tile:nth-child(2){border-right:none}
+}
+</style>
 </head>
 <body>
-    <nav>
-        <div class="nav-content">
-            <div class="logo">NK</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Hi, I'm <span class="highlight">Nikita</span></h1>
-            <p class="subtitle">A passionate developer crafting digital experiences</p>
-            <a href="#projects" class="cta-button">View My Work</a>
-        </div>
-    </section>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
-    <section id="about" class="about">
-        <h2>About Me</h2>
-        <div class="about-content">
-            <p>I'm a developer who loves turning ideas into reality through code. My journey in tech has been driven by curiosity and a passion for creating meaningful solutions.</p>
-            <div class="skills">
-                <span class="skill-tag">HTML</span>
-                <span class="skill-tag">CSS</span>
-                <span class="skill-tag">JavaScript</span>
-                <span class="skill-tag">Web Development</span>
-            </div>
-        </div>
-    </section>
+<nav>
+  <a href="#home" class="nav-logo">Nikita<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
 
-    <section id="projects" class="projects">
-        <h2>My Projects</h2>
-        <div class="project-grid">
-            <div class="project-card">
-                <h3>Project One</h3>
-                <p>A web application that showcases my skills in frontend development.</p>
-                <div class="project-links">
-                    <a href="#" class="project-link">View Demo</a>
-                    <a href="#" class="project-link">Source Code</a>
-                </div>
-            </div>
-            <div class="project-card">
-                <h3>Project Two</h3>
-                <p>An interactive website demonstrating modern web technologies.</p>
-                <div class="project-links">
-                    <a href="#" class="project-link">View Demo</a>
-                    <a href="#" class="project-link">Source Code</a>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- HERO -->
+<section id="home">
+  <div class="hero-stripe"></div>
+  <p class="hero-label">UI / UX Designer &mdash; Open to Opportunities</p>
+  <h1 class="hero-title">
+    Design that<br>
+    <span class="lo">feels</span> before<br>
+    <span class="ld">it speaks.</span>
+  </h1>
+  <p class="hero-sub">Product-focused designer skilled in translating user needs into <strong>clear flows, scalable systems,</strong> and high-fidelity prototypes &mdash; through research and iterative testing.</p>
+  <div class="hero-cta-row">
+    <a href="#projects" class="hero-cta">View My Work &rarr;</a>
+    <a href="#contact" class="hero-cta-ghost">Let&#39;s Talk</a>
+  </div>
+  <div class="hero-bg">NIKITA</div>
+  <div class="scroll-hint">Scroll down</div>
+</section>
 
-    <section id="contact" class="contact">
-        <h2>Get In Touch</h2>
-        <div class="contact-content">
-            <p>Feel free to reach out if you'd like to work together or just say hello!</p>
-            <a href="mailto:your.email@example.com" class="contact-button">Send Message</a>
-        </div>
-    </section>
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal">
+    <p class="section-label">About Me</p>
+    <h2 class="about-heading">Empathy-driven<br>design, <em>always.</em></h2>
+    <p class="about-text">I&#39;m Nikita &mdash; a UI/UX designer who believes the best interface gets out of the user&#39;s way. I build digital products that feel <strong>inevitable, not just polished.</strong></p>
+    <p class="about-text">My Computer Science background means I understand what&#39;s buildable. Designs I hand off don&#39;t require weeks of engineering negotiation &mdash; <strong>grounded in reality from day one.</strong></p>
+    <p class="about-text">Outside design, I sketch, write fiction (working on a novel called <strong>Errica</strong>), and play competitive chess &mdash; every design problem is a thinking problem.</p>
+  </div>
+  <div class="about-right reveal">
+    <div class="stat-item">
+      <div class="stat-number">50+</div>
+      <div class="stat-label">High-Fidelity Screens Designed</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">4</div>
+      <div class="stat-label">End-to-End Projects Delivered</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">35%</div>
+      <div class="stat-label">Avg. Reduction in User Confusion</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">2x</div>
+      <div class="stat-label">Google UX Design Certified</div>
+    </div>
+  </div>
+</section>
 
-    <footer>
-        <p>&copy; 2024 My Portfolio. All rights reserved.</p>
-    </footer>
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="reveal">
+    <p class="section-label">Experience</p>
+    <h2 class="exp-title">Where I&#39;ve done<br><em>the real work.</em></h2>
+  </div>
+  <div class="exp-card reveal">
+    <div>
+      <p class="exp-role">UI / UX Designer</p>
+      <p class="exp-company">Genuinest</p>
+      <span class="exp-badge">iOS Application</span>
+    </div>
+    <div class="exp-content">
+      <h3>Full-Scale Social Media Application</h3>
+      <ul class="exp-highlights">
+        <li>Led end-to-end design &mdash; UX research, wireframing, high-fidelity UI, and interaction design &mdash; across the full platform.</li>
+        <li>Designed <strong>50+ high-fidelity screens</strong> covering onboarding, home feed, reels, profile, messaging, and settings.</li>
+        <li>Conducted competitive analysis across <strong>5+ social platforms</strong> to improve usability and content discovery.</li>
+        <li>Built wireframes, interactive prototypes, and a reusable <strong>Figma design system</strong> to accelerate product iteration.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label reveal">Selected Projects</p>
+  <h2 class="projects-headline reveal">Work that<br><em>moved the needle.</em></h2>
+  <p class="projects-sub reveal">Click any card to explore the full prototype. <span>&#8595;</span></p>
+
+  <div class="projects-grid">
+
+    <a class="proj-card reveal" href="https://flash-whirl-35021990.figma.site" target="_blank" rel="noopener">
+      <div class="proj-card-art" style="background:linear-gradient(135deg,#0A0F1A 0%,#0D1B2F 55%,#101E35 100%);">
+        <svg width="100%" height="100%" viewBox="0 0 700 440" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;pointer-events:none;">
+          <circle cx="350" cy="210" r="170" fill="none" stroke="rgba(255,92,0,.08)" stroke-width="40"/>
+          <circle cx="350" cy="210" r="120" fill="none" stroke="rgba(255,92,0,.1)" stroke-width="25"/>
+          <rect x="272" y="38" width="156" height="286" rx="24" fill="none" stroke="rgba(255,92,0,.5)" stroke-width="1.5"/>
+          <rect x="281" y="55" width="138" height="252" rx="14" fill="rgba(255,92,0,.06)"/>
+          <rect x="322" y="55" width="56" height="10" rx="5" fill="rgba(255,92,0,.3)"/>
+          <circle cx="300" cy="72" r="3" fill="rgba(255,92,0,.6)"/>
+          <line x1="289" y1="85" x2="411" y2="85" stroke="rgba(255,92,0,.15)" stroke-width="1"/>
+          <circle cx="350" cy="200" r="62" fill="rgba(255,92,0,.12)" stroke="rgba(255,92,0,.5)" stroke-width="1.5"/>
+          <circle cx="350" cy="200" r="46" fill="rgba(255,92,0,.22)" stroke="rgba(255,92,0,.7)" stroke-width="1.5"/>
+          <circle cx="350" cy="200" r="32" fill="rgba(255,92,0,.4)"/>
+          <text x="350" y="206" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="900" fill="#F2F0EB" letter-spacing="3">SOS</text>
+          <path d="M350 115 C340 115 333 122 333 131 C333 144 350 158 350 158 C350 158 367 144 367 131 C367 122 360 115 350 115Z" fill="rgba(255,92,0,.8)"/>
+          <circle cx="350" cy="131" r="5" fill="rgba(10,8,6,.9)"/>
+          <rect x="295" y="278" width="110" height="9" rx="4" fill="rgba(242,240,235,.14)"/>
+          <rect x="312" y="294" width="76" height="7" rx="3" fill="rgba(242,240,235,.08)"/>
+        </svg>
+      </div>
+      <div class="proj-card-bottom">
+        <div class="proj-card-tags"><span class="proj-tag">Government</span><span class="proj-tag">Emergency UX</span><span class="proj-tag">50+ Screens</span></div>
+        <div class="proj-card-name">112 Emergency App &mdash; India</div>
+        <div class="proj-card-desc">Audited 10+ screens, resolved 12 critical usability issues, redesigned 6 primary flows &mdash; cutting user confusion by 35% and rework time by 30%.</div>
+      </div>
+      <div class="proj-card-arrow">&#8599;</div>
+    </a>
+
+    <a class="proj-card reveal" href="https://www.behance.net/NIdesignweb" target="_blank" rel="noopener">
+      <div class="proj-card-art" style="background:linear-gradient(145deg,#120C22 0%,#1E1238 55%,#120C22 100%);">
+        <svg width="100%" height="100%" viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;pointer-events:none;">
+          <circle cx="250" cy="160" r="140" fill="none" stroke="rgba(123,47,255,.1)" stroke-width="50"/>
+          <rect x="170" y="20" width="160" height="270" rx="24" fill="none" stroke="rgba(123,47,255,.55)" stroke-width="1.5"/>
+          <rect x="179" y="36" width="142" height="238" rx="13" fill="rgba(123,47,255,.07)"/>
+          <circle cx="250" cy="92" r="30" fill="rgba(123,47,255,.2)" stroke="rgba(123,47,255,.65)" stroke-width="2"/>
+          <text x="250" y="100" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="700" fill="rgba(123,47,255,.9)">N</text>
+          <rect x="208" y="134" width="84" height="8" rx="4" fill="rgba(242,240,235,.2)"/>
+          <rect x="220" y="148" width="60" height="6" rx="3" fill="rgba(242,240,235,.1)"/>
+          <rect x="186" y="166" width="128" height="74" rx="10" fill="rgba(123,47,255,.15)" stroke="rgba(123,47,255,.3)" stroke-width="1"/>
+          <circle cx="204" cy="254" r="8" fill="rgba(123,47,255,.25)" stroke="rgba(123,47,255,.4)" stroke-width="1"/>
+          <circle cx="230" cy="254" r="8" fill="rgba(123,47,255,.25)" stroke="rgba(123,47,255,.4)" stroke-width="1"/>
+          <circle cx="256" cy="254" r="8" fill="rgba(123,47,255,.25)" stroke="rgba(123,47,255,.4)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="proj-card-bottom">
+        <div class="proj-card-tags"><span class="proj-tag">iOS App</span><span class="proj-tag">Social Media</span><span class="proj-tag">Design System</span></div>
+        <div class="proj-card-name">Genuinest &mdash; Social Platform</div>
+        <div class="proj-card-desc">50+ screens. Full design system. Research-to-interaction design for a next-gen social media app.</div>
+      </div>
+      <div class="proj-card-arrow">&#8599;</div>
+    </a>
+
+    <a class="proj-card reveal" href="https://www.figma.com/proto/qmvVXGEwSXx4OyYsiEiS6p/Music-App?page-id=133%3A2060&node-id=228-652&viewport=-242%2C167%2C0.09&t=c1DX8EyxmZstbp2s-1&scaling=scale-down-width&content-scaling=fixed" target="_blank" rel="noopener">
+      <div class="proj-card-art" style="background:linear-gradient(135deg,#041510 0%,#082A1A 55%,#041510 100%);">
+        <svg width="100%" height="100%" viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;pointer-events:none;">
+          <circle cx="250" cy="155" r="115" fill="rgba(0,232,122,.04)" stroke="rgba(0,232,122,.22)" stroke-width="1.5"/>
+          <circle cx="250" cy="155" r="84" fill="rgba(0,232,122,.06)" stroke="rgba(0,232,122,.2)" stroke-width="1"/>
+          <circle cx="250" cy="155" r="56" fill="rgba(0,232,122,.1)" stroke="rgba(0,232,122,.28)" stroke-width="1"/>
+          <circle cx="250" cy="155" r="16" fill="rgba(0,232,122,.7)"/>
+          <rect x="56" y="188" width="6" height="30" rx="3" fill="rgba(0,232,122,.55)"/>
+          <rect x="68" y="173" width="6" height="56" rx="3" fill="rgba(0,232,122,.7)"/>
+          <rect x="80" y="196" width="6" height="24" rx="3" fill="rgba(0,232,122,.45)"/>
+          <rect x="92" y="178" width="6" height="46" rx="3" fill="rgba(0,232,122,.6)"/>
+          <rect x="104" y="185" width="6" height="32" rx="3" fill="rgba(0,232,122,.5)"/>
+          <rect x="390" y="190" width="6" height="26" rx="3" fill="rgba(0,232,122,.55)"/>
+          <rect x="402" y="172" width="6" height="60" rx="3" fill="rgba(0,232,122,.7)"/>
+          <rect x="414" y="198" width="6" height="20" rx="3" fill="rgba(0,232,122,.45)"/>
+          <rect x="426" y="180" width="6" height="46" rx="3" fill="rgba(0,232,122,.6)"/>
+          <rect x="130" y="276" width="240" height="4" rx="2" fill="rgba(242,240,235,.1)"/>
+          <rect x="130" y="276" width="130" height="4" rx="2" fill="rgba(0,232,122,.8)"/>
+          <circle cx="260" cy="278" r="7" fill="rgba(0,232,122,1)"/>
+        </svg>
+      </div>
+      <div class="proj-card-bottom">
+        <div class="proj-card-tags"><span class="proj-tag">Music App</span><span class="proj-tag">Streaming</span><span class="proj-tag">30+ Components</span></div>
+        <div class="proj-card-name">Music Streaming App</div>
+        <div class="proj-card-desc">7 screens, 12 genre-discovery cards, 10+ micro-interactions. Improved content discoverability by 40%.</div>
+      </div>
+      <div class="proj-card-arrow">&#8599;</div>
+    </a>
+
+    <a class="proj-card reveal" href="https://www.figma.com/proto/vKKx0rfIDwI9boHVuXL7KY/Smoothie-crousel?page-id=0%3A1&node-id=2-5&p=f&viewport=34%2C292%2C0.11&t=aoVxiWNyPEpo4YMQ-1&scaling=contain&content-scaling=fixed" target="_blank" rel="noopener">
+      <div class="proj-card-art" style="background:linear-gradient(135deg,#1A1200 0%,#2E2000 55%,#1A1200 100%);">
+        <svg width="100%" height="100%" viewBox="0 0 700 440" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;pointer-events:none;">
+          <rect x="82" y="112" width="172" height="220" rx="18" fill="rgba(242,240,235,.04)" stroke="rgba(255,224,0,.2)" stroke-width="1"/>
+          <rect x="446" y="112" width="172" height="220" rx="18" fill="rgba(242,240,235,.04)" stroke="rgba(255,224,0,.2)" stroke-width="1"/>
+          <rect x="248" y="68" width="204" height="296" rx="22" fill="rgba(255,224,0,.12)" stroke="rgba(255,224,0,.6)" stroke-width="2"/>
+          <ellipse cx="350" cy="178" rx="42" ry="13" fill="rgba(255,224,0,.45)"/>
+          <path d="M308 178 L321 264 Q350 278 379 264 L392 178 Z" fill="rgba(255,224,0,.22)" stroke="rgba(255,224,0,.6)" stroke-width="1.5"/>
+          <line x1="360" y1="165" x2="378" y2="116" stroke="rgba(255,224,0,.8)" stroke-width="3.5" stroke-linecap="round"/>
+          <rect x="272" y="282" width="156" height="9" rx="4" fill="rgba(242,240,235,.18)"/>
+          <rect x="290" y="298" width="120" height="7" rx="3" fill="rgba(242,240,235,.1)"/>
+          <circle cx="322" cy="330" r="5" fill="rgba(255,224,0,.3)"/>
+          <circle cx="350" cy="330" r="9" fill="rgba(255,224,0,1)"/>
+          <circle cx="378" cy="330" r="5" fill="rgba(255,224,0,.3)"/>
+        </svg>
+      </div>
+      <div class="proj-card-bottom">
+        <div class="proj-card-tags"><span class="proj-tag">UI Design</span><span class="proj-tag">Carousel</span><span class="proj-tag">Interaction States</span></div>
+        <div class="proj-card-name">Smoothie Carousel &mdash; UI Prototype</div>
+        <div class="proj-card-desc">6 layout explorations, 12+ interaction states. Carousel cutting decision friction by 30% and improving flow efficiency by 25%.</div>
+      </div>
+      <div class="proj-card-arrow">&#8599;</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <p class="section-label reveal">How I Work</p>
+  <h2 class="process-title reveal">Good design is a<br><em>method</em>, not luck.</h2>
+  <div class="process-steps">
+    <div class="process-step reveal">
+      <div class="step-num">01</div>
+      <h3 class="step-title">Discover</h3>
+      <p class="step-desc">I start with listening &mdash; users, stakeholders, data. I map what people say, what they do, and what they actually need. Research shapes everything that follows.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">02</div>
+      <h3 class="step-title">Define</h3>
+      <p class="step-desc">From insights, I distill a clear problem statement and design principles. Clarity at this stage saves weeks downstream and eliminates guesswork.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">03</div>
+      <h3 class="step-title">Design</h3>
+      <p class="step-desc">Wireframes to high-fidelity. I iterate fast and test with real users before any pixel is finalized. Every decision is grounded in evidence.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">04</div>
+      <h3 class="step-title">Deliver</h3>
+      <p class="step-desc">Annotated specs, component libraries, interaction notes. I stay involved through development so the design vision survives contact with code.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="reveal">
+    <p class="section-label">My Toolkit</p>
+    <h2 class="tools-title">Tools &amp;<br><em>Technologies</em></h2>
+    <p class="tools-subtitle">The instruments I rely on &mdash; chosen for precision, speed, and the quality of thinking they enable.</p>
+  </div>
+  <div class="tools-categories">
+    <div class="reveal">
+      <div class="tools-cat-label cat-d">Design &amp; Prototyping</div>
+      <div class="tools-list tl-d">
+        <div class="tool-card"><div class="tool-icon">&#10022;</div><div class="tool-name">Figma</div><div class="tool-use">Primary design &amp; prototyping</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9672;</div><div class="tool-name">Adobe XD</div><div class="tool-use">UI design &amp; handoffs</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9650;</div><div class="tool-name">Framer</div><div class="tool-use">Animated prototypes</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9710;</div><div class="tool-name">Wireframing</div><div class="tool-use">Low &amp; mid-fidelity flows</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9711;</div><div class="tool-name">Interaction Design</div><div class="tool-use">Micro-interactions &amp; states</div></div>
+        <div class="tool-card"><div class="tool-icon">&#11041;</div><div class="tool-name">Responsive Design</div><div class="tool-use">Multi-device layouts</div></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="tools-cat-label cat-r">Research &amp; Strategy</div>
+      <div class="tools-list tl-r">
+        <div class="tool-card"><div class="tool-icon">&#9635;</div><div class="tool-name">User Research</div><div class="tool-use">Interviews &amp; usability tests</div></div>
+        <div class="tool-card"><div class="tool-icon">&#11053;</div><div class="tool-name">Journey Mapping</div><div class="tool-use">Flow &amp; friction analysis</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9677;</div><div class="tool-name">Empathy Mapping</div><div class="tool-use">Emotional needs &amp; motivations</div></div>
+        <div class="tool-card"><div class="tool-icon">&#8853;</div><div class="tool-name">UX Audits</div><div class="tool-use">Usability gap analysis</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9651;</div><div class="tool-name">Onboarding Design</div><div class="tool-use">Activation &amp; first-run flows</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9724;</div><div class="tool-name">Competitive Analysis</div><div class="tool-use">Market benchmarking</div></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="tools-cat-label cat-v">Visual &amp; Code</div>
+      <div class="tools-list tl-v">
+        <div class="tool-card"><div class="tool-icon">&#9636;</div><div class="tool-name">Illustrator</div><div class="tool-use">Iconography &amp; vectors</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9723;</div><div class="tool-name">Photoshop</div><div class="tool-use">Image editing &amp; visual comp</div></div>
+        <div class="tool-card"><div class="tool-icon">&#11039;</div><div class="tool-name">Layout Design</div><div class="tool-use">Grid &amp; visual hierarchy</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9655;</div><div class="tool-name">Visualization</div><div class="tool-use">Data &amp; information design</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9643;</div><div class="tool-name">HTML</div><div class="tool-use">Front-end fundamentals</div></div>
+        <div class="tool-card"><div class="tool-icon">&#9672;</div><div class="tool-name">Design Systems</div><div class="tool-use">Component libraries</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+
+  <div class="contact-upper reveal">
+    <div>
+      <p class="section-label" style="color:var(--green)">
+        <span style="display:block;width:28px;height:2px;background:var(--green);margin-right:14px;display:inline-block;vertical-align:middle"></span>
+        Get In Touch
+      </p>
+      <h2 class="contact-tagline">
+        Let&#39;s build<br>
+        something<br>
+        <em>together.</em>
+      </h2>
+    </div>
+    <p class="contact-byline">
+      Currently open to full-time roles and select freelance projects.<br><br>
+      If you have something in mind &mdash; <strong>I&#39;d love to hear about it.</strong> Reach out through any of the channels below.
+    </p>
+  </div>
+
+  <div class="contact-bar"></div>
+
+  <div class="contact-grid">
+
+    <a href="mailto:nikitaofficial300@gmail.com" class="contact-tile reveal">
+      <div class="ct-top">
+        <span class="ct-label">Email</span>
+        <span class="ct-arrow">&#8599;</span>
+      </div>
+      <span class="ct-value">nikitaofficial300@gmail.com</span>
+      <span class="ct-tag">Write to me</span>
+    </a>
+
+    <a href="tel:+918968752908" class="contact-tile reveal">
+      <div class="ct-top">
+        <span class="ct-label">Phone</span>
+        <span class="ct-arrow">&#8599;</span>
+      </div>
+      <span class="ct-value">+91 89687 52908</span>
+      <span class="ct-tag">Call me</span>
+    </a>
+
+    <a href="https://www.linkedin.com/in/nikitades" target="_blank" class="contact-tile reveal">
+      <div class="ct-top">
+        <span class="ct-label">LinkedIn</span>
+        <span class="ct-arrow">&#8599;</span>
+      </div>
+      <span class="ct-value">linkedin.com/in/nikitades</span>
+      <span class="ct-tag">Connect</span>
+    </a>
+
+    <a href="https://www.behance.net/NIdesignweb" target="_blank" class="contact-tile reveal">
+      <div class="ct-top">
+        <span class="ct-label">Behance</span>
+        <span class="ct-arrow">&#8599;</span>
+      </div>
+      <span class="ct-value">behance.net/NIdesignweb</span>
+      <span class="ct-tag">See my work</span>
+    </a>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2025 <span>Nikita Nautyal</span>. All rights reserved.</p>
+    <p>Crafted with intention &mdash; and a lot of <span>Figma</span>.</p>
+  </footer>
+</section>
+
+<script>
+var cursor=document.getElementById('cursor');
+var ring=document.getElementById('cursorRing');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(en,i){if(en.isIntersecting){setTimeout(function(){en.target.classList.add('visible');},i*80);io.unobserve(en.target);}});
+},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+var secs=document.querySelectorAll('section');
+var nas=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',function(){
+  var cur='';
+  secs.forEach(function(s){if(window.scrollY>=s.offsetTop-160)cur=s.id;});
+  nas.forEach(function(a){
+    a.classList.toggle('active',a.getAttribute('href')==='#'+cur);
+  });
+});
+</script>
+</body>
+</html>
 
     <script src="script.js"></script>
 </body>
+
 </html> 
